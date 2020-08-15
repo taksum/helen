@@ -6,8 +6,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from datetime import datetime, time
 from time import sleep
 
-TIME = '22:40'
-HEADLESS = False
+TIME = '00:00'
+HEADLESS = True
 
 webdriver_path = {
     'Linux': './chrome_driver/chromedriver_mac',
@@ -48,9 +48,11 @@ startTime = time(*(map(int, TIME.split(':'))))
 while startTime > datetime.today().time():
     sleep(0.001)
 
-WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+WebDriverWait(driver, 5).until(EC.presence_of_element_located(
     (By.ID, 'DERIVED_REGFRM1_LINK_ADD_ENRL')))
 driver.find_element_by_link_text('enroll').click()
-WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+WebDriverWait(driver, 5).until(EC.presence_of_element_located(
     (By.ID, 'DERIVED_REGFRM1_SSR_PB_SUBMIT')))
 driver.find_element_by_link_text('Finish Enrolling').click()
+
+print('Good luck and have fun!')
