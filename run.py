@@ -7,7 +7,7 @@ from datetime import datetime, time
 from time import sleep
 
 TIME = '22:40'
-TIMEOUT = 3
+HEADLESS = False
 
 webdriver_path = {
     'Linux': './chrome_driver/chromedriver_mac',
@@ -28,13 +28,16 @@ cookies = driver.get_cookies()
 driver.quit()
 
 options = webdriver.ChromeOptions()
-# options.add_argument("--headless")
-
-driver = webdriver.Chrome(executable_path=webdriver_path[system], options=options)
+if HEADLESS:
+    options.add_argument("--headless")
+driver = webdriver.Chrome(
+    executable_path=webdriver_path[system], options=options)
 driver.get('https://sisprod.psft.ust.hk/psc/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES_2.SSR_SSENRL_CART.GBL?Page=SSR_SSENRL_CART&Action=A&ExactKeys=Y&TargetFrameName=None')
 for cookie in cookies:
     driver.add_cookie(cookie)
 driver.get('https://sisprod.psft.ust.hk/psc/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES_2.SSR_SSENRL_CART.GBL?Page=SSR_SSENRL_CART&Action=A&ExactKeys=Y&TargetFrameName=None')
+
+# enrollment logic
 driver.find_element_by_link_text('Plan').click()
 
 for i in range(driver.find_element_by_id('SSR_REGFORM_VW$scroll$0').get_attribute('innerHTML').count('tr id')):
@@ -44,7 +47,9 @@ startTime = time(*(map(int, TIME.split(':'))))
 while startTime > datetime.today().time():
     sleep(0.01)
 
-WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, 'DERIVED_REGFRM1_LINK_ADD_ENRL')))
+WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+    (By.ID, 'DERIVED_REGFRM1_LINK_ADD_ENRL')))
 driver.find_element_by_link_text('enroll').click()
-WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, 'DERIVED_REGFRM1_SSR_PB_SUBMIT')))
+WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+    (By.ID, 'DERIVED_REGFRM1_SSR_PB_SUBMIT')))
 driver.find_element_by_link_text('Finish Enrolling').click()
