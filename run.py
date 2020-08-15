@@ -21,7 +21,10 @@ if system not in webdriver_path.keys():
 
 # login logic
 url = 'https://sisprod.psft.ust.hk/psp/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES.SSS_STUDENT_CENTER.GBL?pslnkid=Z_HC_SSS_STUDENT_CENTER_LNK&FolderPath=PORTAL_ROOT_OBJECT.Z_HC_SSS_STUDENT_CENTER_LNK&IsFolder=false&IgnoreParamTempl=FolderPath%2cIsFolder'
-driver = webdriver.Chrome(executable_path=webdriver_path[system])
+options = webdriver.ChromeOptions()
+options.add_experimental_option('excludeSwitches', ['enable-logging'])
+driver = webdriver.Chrome(
+    executable_path=webdriver_path[system], options=options)
 driver.get(url)
 WebDriverWait(driver, 60).until(EC.title_contains("Student Center"))
 cookies = driver.get_cookies()
@@ -29,7 +32,6 @@ driver.quit()
 
 # enrollment logic
 url = 'https://sisprod.psft.ust.hk/psc/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES_2.SSR_SSENRL_CART.GBL?Page=SSR_SSENRL_CART&Action=A&ExactKeys=Y&TargetFrameName=None'
-options = webdriver.ChromeOptions()
 if HEADLESS:
     options.add_argument("--headless")
 driver = webdriver.Chrome(
@@ -48,10 +50,10 @@ startTime = time(*(map(int, TIME.split(':'))))
 while startTime > datetime.today().time():
     sleep(0.001)
 
-WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+WebDriverWait(driver, 180).until(EC.presence_of_element_located(
     (By.ID, 'DERIVED_REGFRM1_LINK_ADD_ENRL')))
 driver.find_element_by_link_text('enroll').click()
-WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+WebDriverWait(driver, 180).until(EC.presence_of_element_located(
     (By.ID, 'DERIVED_REGFRM1_SSR_PB_SUBMIT')))
 driver.find_element_by_link_text('Finish Enrolling').click()
 
