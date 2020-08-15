@@ -1,26 +1,26 @@
-import os
-from dotenv import load_dotenv
+import platform
 from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from datetime import datetime, time
 from time import sleep
 
-
-load_dotenv()
-
-TIME = os.getenv('TIMESLOT')
+TIME = '22:40'
+TIMEOUT = 3
 
 webdriver_path = {
-    'macos': './chrome_driver/chromedriver_mac',
-    'linux': './chrome_driver/chromedriver_linux',
-    'windows': './chrome_driver/chromedriver.exe'
+    'Linux': './chrome_driver/chromedriver_mac',
+    'Darwin': './chrome_driver/chromedriver_linux',
+    'Windows': './chrome_driver/chromedriver.exe'
 }
 
-if os.getenv('OS') not in ['macos', 'linux', 'windows']:
-    raise ValueError('env variable "OS" is not one of "macos", "linux", or "windows"')
+system = platform.system()
 
-driver = webdriver.Chrome(executable_path=webdriver_path[os.getenv('OS')])
+if system not in webdriver_path.keys():
+    raise ValueError('Your operating system is not supported!')
+
+driver = webdriver.Chrome(executable_path=webdriver_path[system])
 driver.get('https://sisprod.psft.ust.hk/psp/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES.SSS_STUDENT_CENTER.GBL?pslnkid=Z_HC_SSS_STUDENT_CENTER_LNK&FolderPath=PORTAL_ROOT_OBJECT.Z_HC_SSS_STUDENT_CENTER_LNK&IsFolder=false&IgnoreParamTempl=FolderPath%2cIsFolder')
 WebDriverWait(driver, 60).until(EC.title_contains("Student Center"))
 
@@ -28,9 +28,9 @@ cookies = driver.get_cookies()
 driver.quit()
 
 options = webdriver.ChromeOptions()
-options.add_argument("--headless")
+# options.add_argument("--headless")
 
-driver = webdriver.Chrome(executable_path='./chromedriver.exe', options=options)
+driver = webdriver.Chrome(executable_path=webdriver_path[system], options=options)
 driver.get('https://sisprod.psft.ust.hk/psc/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES_2.SSR_SSENRL_CART.GBL?Page=SSR_SSENRL_CART&Action=A&ExactKeys=Y&TargetFrameName=None')
 for cookie in cookies:
     driver.add_cookie(cookie)
@@ -44,5 +44,7 @@ startTime = time(*(map(int, TIME.split(':'))))
 while startTime > datetime.today().time():
     sleep(0.01)
 
+WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, 'DERIVED_REGFRM1_LINK_ADD_ENRL')))
 driver.find_element_by_link_text('enroll').click()
+WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.ID, 'DERIVED_REGFRM1_SSR_PB_SUBMIT')))
 driver.find_element_by_link_text('Finish Enrolling').click()
