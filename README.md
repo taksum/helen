@@ -27,4 +27,4 @@ TIME = '13:30'
 $ python3 run.py
 ```
 2. Log in by your credentials
-3. Boomshakalaka
+3. BOOMSHAKALAKA
