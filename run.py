@@ -1,12 +1,26 @@
+import os
+from dotenv import load_dotenv
 from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from datetime import datetime, time
 from time import sleep
 
-TIME = '22:40' # input your timeslot here
 
-driver = webdriver.Chrome(executable_path='./chromedriver.exe')
+load_dotenv()
+
+TIME = os.getenv('TIMESLOT')
+
+webdriver_path = {
+    'macos': './chrome_driver/chromedriver_mac',
+    'linux': './chrome_driver/chromedriver_linux',
+    'windows': './chrome_driver/chromedriver.exe'
+}
+
+if os.getenv('OS') not in ['macos', 'linux', 'windows']:
+    raise ValueError('env variable "OS" is not one of "macos", "linux", or "windows"')
+
+driver = webdriver.Chrome(executable_path=webdriver_path[os.getenv('OS')])
 driver.get('https://sisprod.psft.ust.hk/psp/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES.SSS_STUDENT_CENTER.GBL?pslnkid=Z_HC_SSS_STUDENT_CENTER_LNK&FolderPath=PORTAL_ROOT_OBJECT.Z_HC_SSS_STUDENT_CENTER_LNK&IsFolder=false&IgnoreParamTempl=FolderPath%2cIsFolder')
 WebDriverWait(driver, 60).until(EC.title_contains("Student Center"))
 
