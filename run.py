@@ -1,3 +1,4 @@
+import sys
 import platform
 from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
@@ -10,23 +11,24 @@ TIME = '00:00'
 HEADLESS = True
 
 webdriver_path = {
-    'Linux': './chrome_driver/chromedriver_mac',
-    'Darwin': './chrome_driver/chromedriver_linux',
+    'Linux': './chrome_driver/chromedriver_linux',
+    'Darwin': './chrome_driver/chromedriver_mac',
     'Windows': './chrome_driver/chromedriver.exe'
 }
 
 system = platform.system()
 if system not in webdriver_path.keys():
-    raise ValueError('Your operating system is not supported!')
+    sys.exit('Your operating system is not supported!')
+
+options = webdriver.ChromeOptions()
+options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
 # login logic
 url = 'https://sisprod.psft.ust.hk/psp/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES.SSS_STUDENT_CENTER.GBL?pslnkid=Z_HC_SSS_STUDENT_CENTER_LNK&FolderPath=PORTAL_ROOT_OBJECT.Z_HC_SSS_STUDENT_CENTER_LNK&IsFolder=false&IgnoreParamTempl=FolderPath%2cIsFolder'
-options = webdriver.ChromeOptions()
-options.add_experimental_option('excludeSwitches', ['enable-logging'])
 driver = webdriver.Chrome(
     executable_path=webdriver_path[system], options=options)
 driver.get(url)
-WebDriverWait(driver, 60).until(EC.title_contains("Student Center"))
+WebDriverWait(driver, 180).until(EC.title_contains("Student Center"))
 cookies = driver.get_cookies()
 driver.quit()
 
@@ -44,7 +46,10 @@ driver.get(url)
 driver.find_element_by_link_text('Plan').click()
 
 for i in range(driver.find_element_by_id('SSR_REGFORM_VW$scroll$0').get_attribute('innerHTML').count('tr id')):
-    driver.find_element_by_xpath(f'//*[@id="P_SELECT${i}"]').click()
+    try:
+        driver.find_element_by_xpath(f'//*[@id="P_SELECT${i}"]').click()
+    except:
+        sys.exit('Nothing is in your shopping cart.')
 
 startTime = time(*(map(int, TIME.split(':'))))
 while startTime > datetime.today().time():
