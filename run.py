@@ -16,28 +16,29 @@ webdriver_path = {
 }
 
 system = platform.system()
-
 if system not in webdriver_path.keys():
     raise ValueError('Your operating system is not supported!')
 
+# login logic
+url = 'https://sisprod.psft.ust.hk/psp/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES.SSS_STUDENT_CENTER.GBL?pslnkid=Z_HC_SSS_STUDENT_CENTER_LNK&FolderPath=PORTAL_ROOT_OBJECT.Z_HC_SSS_STUDENT_CENTER_LNK&IsFolder=false&IgnoreParamTempl=FolderPath%2cIsFolder'
 driver = webdriver.Chrome(executable_path=webdriver_path[system])
-driver.get('https://sisprod.psft.ust.hk/psp/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES.SSS_STUDENT_CENTER.GBL?pslnkid=Z_HC_SSS_STUDENT_CENTER_LNK&FolderPath=PORTAL_ROOT_OBJECT.Z_HC_SSS_STUDENT_CENTER_LNK&IsFolder=false&IgnoreParamTempl=FolderPath%2cIsFolder')
+driver.get(url)
 WebDriverWait(driver, 60).until(EC.title_contains("Student Center"))
-
 cookies = driver.get_cookies()
 driver.quit()
 
+# enrollment logic
+url = 'https://sisprod.psft.ust.hk/psc/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES_2.SSR_SSENRL_CART.GBL?Page=SSR_SSENRL_CART&Action=A&ExactKeys=Y&TargetFrameName=None'
 options = webdriver.ChromeOptions()
 if HEADLESS:
     options.add_argument("--headless")
 driver = webdriver.Chrome(
     executable_path=webdriver_path[system], options=options)
-driver.get('https://sisprod.psft.ust.hk/psc/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES_2.SSR_SSENRL_CART.GBL?Page=SSR_SSENRL_CART&Action=A&ExactKeys=Y&TargetFrameName=None')
+driver.get(url)
 for cookie in cookies:
     driver.add_cookie(cookie)
-driver.get('https://sisprod.psft.ust.hk/psc/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES_2.SSR_SSENRL_CART.GBL?Page=SSR_SSENRL_CART&Action=A&ExactKeys=Y&TargetFrameName=None')
+driver.get(url)
 
-# enrollment logic
 driver.find_element_by_link_text('Plan').click()
 
 for i in range(driver.find_element_by_id('SSR_REGFORM_VW$scroll$0').get_attribute('innerHTML').count('tr id')):
@@ -45,7 +46,7 @@ for i in range(driver.find_element_by_id('SSR_REGFORM_VW$scroll$0').get_attribut
 
 startTime = time(*(map(int, TIME.split(':'))))
 while startTime > datetime.today().time():
-    sleep(0.01)
+    sleep(0.001)
 
 WebDriverWait(driver, 3).until(EC.presence_of_element_located(
     (By.ID, 'DERIVED_REGFRM1_LINK_ADD_ENRL')))
