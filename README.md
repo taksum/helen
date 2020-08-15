@@ -6,16 +6,25 @@ Automated course registration tool for HKUST fellas
 * Python 3.8.3
 
 ## Installation
-Install all the dependencies from Pypi:
+Install the selenium from Pypi:
 ```sh
-$ pip install -r requirements.txt
+$ pip3 install selenium
 ```
+Make sure your Chrome version is 84
 
 ## Setup
-At project root, add a .env file and fill in the required secrets. See .env.template for details.
+Enter your enrollment timeslot on line 9 in file `run.py`
+
+Example:
+```python
+TIME = '13:30'
+```
+
 
 ## Usage
-To execute the program, run
+1. Run the program 5-15 minutes before your enrollment timeslot
 ```sh
-$ python run.py
+$ python3 run.py
 ```
+2. Log in by your credentials
+3. Boomshakalaka
