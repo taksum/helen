@@ -6,9 +6,9 @@ Automated course registration tool for HKUST fellas
 * Python 3.8.3
 
 ## Installation
-Install the selenium from Pypi:
+Install dependencies from Pypi:
 ```sh
-$ pip3 install selenium
+$ pip install -r requirements.txt
 ```
 Make sure your Chrome version is 84
 
