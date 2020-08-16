@@ -13,7 +13,7 @@ $ pip install -r requirements.txt
 Make sure your Chrome version is 84
 
 ## Setup
-Enter your enrollment timeslot on line 9 in file `run.py`
+Enter your enrollment timeslot on line 10 in file `run.py`
 
 Example:
 ```python
