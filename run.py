@@ -32,11 +32,13 @@ WebDriverWait(driver, 120).until(EC.title_contains("Student Center"))
 driver.get('https://sisprod.psft.ust.hk/psc/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES_2.SSR_SSENRL_CART.GBL?Page=SSR_SSENRL_CART&Action=A&ExactKeys=Y&TargetFrameName=None')
 driver.find_element_by_link_text('Plan').click()
 
-for i in range(driver.find_element_by_id('SSR_REGFORM_VW$scroll$0').get_attribute('innerHTML').count('tr id')):
-    try:
+payload = driver.find_element_by_id('SSR_REGFORM_VW$scroll$0').get_attribute('innerHTML').count('P_SELECT')
+
+if not payload:
+    sys.exit('Nothing is in your shopping cart.')
+
+for i in range(payload):
         driver.find_element_by_xpath(f'//*[@id="P_SELECT${i}"]').click()
-    except:
-        sys.exit('Nothing is in your shopping cart.')
 
 startTime = time(*(map(int, TIME.split(':'))))
 while startTime > datetime.today().time():
