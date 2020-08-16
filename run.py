@@ -6,6 +6,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from datetime import datetime, time
 from time import sleep
+from tkinter import messagebox
+import tkinter as tk
 
 TIME = '00:00'
 
@@ -22,6 +24,14 @@ if system not in webdriver_path.keys():
 options = webdriver.ChromeOptions()
 options.add_experimental_option('excludeSwitches', ['enable-logging'])
 
+# Preflight briefing
+root = tk.Tk()
+root.withdraw()
+messagebox.showinfo(
+    title='Before we begin...',
+    message="After you login, don't touch the browser window. Sit back and enjoy while I work my magic~",
+)
+
 # login logic
 driver = webdriver.Chrome(
     executable_path=webdriver_path[system], options=options)
@@ -36,7 +46,12 @@ for i in range(driver.find_element_by_id('SSR_REGFORM_VW$scroll$0').get_attribut
     try:
         driver.find_element_by_xpath(f'//*[@id="P_SELECT${i}"]').click()
     except:
-        sys.exit('Nothing is in your shopping cart.')
+        root.focus_set()
+        messagebox.showinfo(
+            title='Oops...',
+            message='Nothing is in your shopping cart.'
+        )
+        sys.exit()
 
 startTime = time(*(map(int, TIME.split(':'))))
 while startTime > datetime.today().time():
