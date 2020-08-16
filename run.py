@@ -5,7 +5,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from datetime import datetime, time
-from time import sleep
 
 TIME = '00:00'
 
@@ -32,21 +31,23 @@ WebDriverWait(driver, 120).until(EC.title_contains("Student Center"))
 driver.get('https://sisprod.psft.ust.hk/psc/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES_2.SSR_SSENRL_CART.GBL?Page=SSR_SSENRL_CART&Action=A&ExactKeys=Y&TargetFrameName=None')
 driver.find_element_by_link_text('Plan').click()
 
-payload = driver.find_element_by_id('SSR_REGFORM_VW$scroll$0').get_attribute('innerHTML').count('P_SELECT')
+payload = driver.find_element_by_id(
+    'SSR_REGFORM_VW$scroll$0').get_attribute('innerHTML').count('P_SELECT')
 
 if not payload:
     sys.exit('Nothing is in your shopping cart.')
 
 for i in range(payload):
-        driver.find_element_by_xpath(f'//*[@id="P_SELECT${i}"]').click()
+    driver.find_element_by_xpath(f'//*[@id="P_SELECT${i}"]').click()
 
+button = driver.find_element_by_link_text('enroll')
 startTime = time(*(map(int, TIME.split(':'))))
-while startTime > datetime.today().time():
-    sleep(0.001)
 
-driver.find_element_by_link_text('enroll').click()
-WebDriverWait(driver, 300).until(EC.presence_of_element_located(
+WebDriverWait(driver, 1000, 0.002).until(startTime > datetime.today().time())
+button.click()
+
+WebDriverWait(driver, 300, 0.002).until(EC.presence_of_element_located(
     (By.ID, 'DERIVED_REGFRM1_SSR_PB_SUBMIT')))
-driver.find_element_by_link_text('Finish Enrolling').click()
+driver.find_element_by_link_text('Finish Enrolling').click()         # TODO: migrate link_text to id
 
 print('Good luck and have fun!')
