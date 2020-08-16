@@ -43,7 +43,7 @@ for i in range(payload):
 button = driver.find_element_by_link_text('enroll')
 startTime = time(*(map(int, TIME.split(':'))))
 
-WebDriverWait(driver, 1000, 0.002).until(startTime > datetime.today().time())
+WebDriverWait(driver, 1000, 0.002).until(lambda s: datetime.today().time() > startTime)
 button.click()
 
 WebDriverWait(driver, 300, 0.002).until(EC.presence_of_element_located(
