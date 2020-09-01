@@ -27,27 +27,18 @@ driver.get('https://sisprod.psft.ust.hk/psp/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_S
 WebDriverWait(driver, 120).until(EC.title_contains("Student Center"))
 
 # enrollment logic
-driver.get('https://sisprod.psft.ust.hk/psc/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES_2.SSR_SSENRL_CART.GBL?Page=SSR_SSENRL_CART&Action=A&ExactKeys=Y&TargetFrameName=None')
+driver.get('https://sisprod.psft.ust.hk/psc/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL?Page=SSR_SSENRL_CART&Action=A&ACAD_CAREER=CAR&EMPLID=20520422&ENRL_REQUEST_ID=&INSTITUTION=INST&STRM=TERM')
 driver.find_element_by_id('SSR_DUMMY_RECV1$sels$1$$0').click()
 driver.find_element_by_id('DERIVED_SSS_SCT_SSR_PB_GO').click()
 
-driver.find_element_by_link_text('Plan').click()
+WebDriverWait(driver, 120).until(EC.presence_of_element_located((By.ID, 'DERIVED_REGFRM1_LINK_ADD_ENRL$82$')))
+button = driver.find_element_by_id('DERIVED_REGFRM1_LINK_ADD_ENRL$82$')
 
-payload = driver.find_element_by_id('SSR_REGFORM_VW$scroll$0').get_attribute('innerHTML').count('P_SELECT')
-
-if not payload:
-    sys.exit('Nothing is in your shopping cart.')
-
-for i in range(payload):
-    driver.find_element_by_xpath(f'//*[@id="P_SELECT${i}"]').click()
-
-button = driver.find_element_by_link_text('enroll')
 startTime = time(*(map(int, TIME.split(':'))))
-
 WebDriverWait(driver, 1000, 0.002).until(lambda s: datetime.today().time() > startTime)
 button.click()
 
 WebDriverWait(driver, 300, 0.002).until(EC.presence_of_element_located((By.ID, 'DERIVED_REGFRM1_SSR_PB_SUBMIT')))
-driver.find_element_by_link_text('Finish Enrolling').click()         # TODO: migrate link_text to id
+driver.find_element_by_id('DERIVED_REGFRM1_SSR_PB_SUBMIT').click()
 
 print('Good luck and have fun!')
