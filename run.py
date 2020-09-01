@@ -6,7 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from datetime import datetime, time
 
-TIME = '00:00'
+TIME = '11:30'
 
 webdriver_path = {
     'Linux'  : './chrome_driver/chromedriver_linux',
@@ -28,6 +28,9 @@ WebDriverWait(driver, 120).until(EC.title_contains("Student Center"))
 
 # enrollment logic
 driver.get('https://sisprod.psft.ust.hk/psc/SISPROD/EMPLOYEE/HRMS/c/SA_LEARNER_SERVICES_2.SSR_SSENRL_CART.GBL?Page=SSR_SSENRL_CART&Action=A&ExactKeys=Y&TargetFrameName=None')
+driver.find_element_by_id('SSR_DUMMY_RECV1$sels$1$$0').click()
+driver.find_element_by_id('DERIVED_SSS_SCT_SSR_PB_GO').click()
+
 driver.find_element_by_link_text('Plan').click()
 
 payload = driver.find_element_by_id('SSR_REGFORM_VW$scroll$0').get_attribute('innerHTML').count('P_SELECT')
